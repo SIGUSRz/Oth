@@ -1,13 +1,31 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(Oth)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+set(CMAKE_CXX_STANDARD 17)
+set(BOOST_ROOT /usr/local/boost)
+set(Boost_INCLUDE_DIR ${BOOST_ROOT}/include)
+set(Boost_LIBRARY_DIR ${BOOST_ROOT}/lib)
+set(LINK_PROGRAM_OPTIONS "-lboost_program_options")
+set(BOOST_NO_SYSTEM_PATHS ON)
 
-find_package(Boost)
-IF (Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIR})
+find_package(Boost COMPONENTS system filesystem REQUIRED)
+include_directories(${Boost_INCLUDE_DIR})
+link_directories(${Boost_LIBRARY_DIR})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -v")
+
+set(BIN "exec")
+set(OBJ "obj")
+set(INC "include")
+IF(NOT EXISTS ${BIN})
+    file(MAKE_DIRECTORY ${BIN})
 endif()
+IF(NOT EXISTS ${OBJ})
+    file(MAKE_DIRECTORY ${OBJ})
+endif()
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN})
 
-
-add_custom_target(Oth COMMAND make -C ${mytest_SOURCE_DIR}
-        CLION_EXE_DIR=${PROJECT_BINARY_DIR})
+include_directories(${INC})
+add_executable(othello othello.cpp)
+target_link_libraries(othello ${LINK_PROGRAM_OPTIONS})
+#add_custom_target(Oth COMMAND make -C ${mytest_SOURCE_DIR}
+#        CLION_EXE_DIR=${PROJECT_BINARY_DIR})
