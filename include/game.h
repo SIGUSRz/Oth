@@ -5,6 +5,7 @@
 #ifndef OTH_GAME_H
 #define OTH_GAME_H
 
+#include <string>
 #include <time.h>
 #include "board.h"
 #include "const.h"
@@ -14,15 +15,15 @@ using namespace std;
 class Game{
 public:
     Game();
-    void setup(int gameType);
-    void play();
+    void setup(int gameType, string file_list);
+//    void play();
 
 private:
-    int heuristic(Board board);
-    int alphabeta(Board board, int depth, int alpha, int beta, bool maxPlayer);
-    bool smartMove();
-    bool humanMove();
-    bool randomMove();
+//    int heuristic(Board board);
+//    int alphabeta(Board board, int depth, int alpha, int beta, bool maxPlayer);
+//    bool smartMove();
+//    bool humanMove();
+//    bool randomMove();
 
     Board board;
     int maxPlayer;

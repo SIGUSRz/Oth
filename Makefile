@@ -10,7 +10,7 @@ setup:
 	test -d $(OBJ) || mkdir $(OBJ)
 	test -d $(BIN) || mkdir $(BIN)
 
-othello.o: othello.cpp $(INC)/game.h
+othello.o: src/othello.cpp $(INC)/game.h
 	$(CC) -c -o $(OBJ)/othello.o $< $(CFLAGS)
 othello: othello.o
 	$(CC) -o $(BIN)/othello $(OBJ)/othello.o $(CFLAGS) $(LIBS)

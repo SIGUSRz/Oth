@@ -7,7 +7,6 @@
 
 #include <vector>
 #include "const.h"
-#endif //OTH_BOARD_H
 
 using namespace std;
 
@@ -31,4 +30,11 @@ public:
     Board(Board &b);
     Board(int board[8][8], int current_player);
 
+    int currentPlayer;
+    int score[3];
+    int board[BOARDSIZE][BOARDSIZE];
+    bool playerPassed;
+
 };
+
+#endif //OTH_BOARD_H
