@@ -6,7 +6,7 @@
 #define OTH_GAME_H
 
 #include <string>
-#include <time.h>
+#include <ctime>
 #include "board.h"
 #include "const.h"
 
@@ -14,7 +14,7 @@ using namespace std;
 
 class Game{
 public:
-    Game();
+    Game() = default;
     void setup(int gameType, string file_list);
 //    void play();
 

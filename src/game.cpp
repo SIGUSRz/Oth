@@ -6,17 +6,15 @@
 #include <fstream>
 #include <vector>
 #include <climits>
-#include <time.h>
-#include <ctype.h>
+#include <ctime>
+#include <cctype>
 #include <unistd.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include "game.h"
 #include "board.h"
 #include "const.h"
 
 using namespace std;
-
-Game::Game(){}
 
 void Game::setup(int gameType, string board_file) {
     switch(gameType) {

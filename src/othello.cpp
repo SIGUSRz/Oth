@@ -18,7 +18,7 @@ int main(int argc, const char *argv[]) {
                 ("type,t", po::value<int>(&gameType)->required(),
                  "game type: 0 - player first, 1 - opponent first")
                 ("limit,l", po::value<int>(&timeLimit)->required(),
-                 "time limit for each step");
+                 "time limit for each steps");
         po::options_description hidden;
         hidden.add_options()
                 ("include,I", po::value<string>(),
