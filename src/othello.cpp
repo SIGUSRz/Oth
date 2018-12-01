@@ -9,7 +9,7 @@ namespace po = boost::program_options;
 
 int main(int argc, const char *argv[]) {
     string board_file;
-    int gameType, timeLimit, player;
+    int gameType, timeLimit;
     Game game;
     try {
         po::options_description desc("Othello Usage");
