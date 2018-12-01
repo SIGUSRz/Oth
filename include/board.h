@@ -45,7 +45,7 @@ public:
     const int directions[4] = {1, 2, 3, 4};
     const int steps[2] = {-1, 1};
 
-    void PrintBoard(vector<Board::Move> moves = vector<Board::Move>(), bool computer = false);
+    void PrintBoard(vector<Board::Move> moves, bool player, int firstPlayer);
 
     bool OnFrontier(int y, int x);
 

@@ -76,7 +76,16 @@ Board::Board(int boardState[8][8], int currentPlayer) {
 }
 
 // print board: player move in yellow, computer move in green
-void Board::PrintBoard(vector<Board::Move> moves, bool player) {
+void Board::PrintBoard(vector<Board::Move> moves, bool player, int firstPlayer) {
+    if (firstPlayer == 0) {
+        cout << "Your Piece: " << RED << setw(2) << BLACK << RESET << endl;
+        cout << "Computer Piece: " << BLUE << setw(2) << WHITE << RESET << endl;
+    } else {
+        cout << "Your Piece: " << BLUE << setw(2) << WHITE << RESET << endl;
+        cout << "Computer Piece: " << RED << setw(2) << BLACK << RESET << endl;
+    }
+    cout << "Your Valid Move: " << GREEN << setw(2) << 0 << RESET << endl;
+    cout << "Computer Valid Move: " << YELLOW << setw(2) << 0 << RESET << endl;
     cout << "    0  1  2  3  4  5  6  7" << endl;
     cout << "   ------------------------" << endl;
     for (int i = 0; i < BOARDSIZE; i++) {
@@ -95,9 +104,9 @@ void Board::PrintBoard(vector<Board::Move> moves, bool player) {
             }
             if (!potentialMove) {
                 if (board[i][j] == WHITE) {
-                    cout << RED;
-                } else if (board[i][j] == BLACK) {
                     cout << BLUE;
+                } else if (board[i][j] == BLACK) {
+                    cout << RED;
                 }
                 cout << setw(2) << board[i][j] << RESET << " ";
             }
@@ -182,7 +191,9 @@ void Board::ApplyMove(Board::Move move) {
     } else {
         score[BLACK]++;
     }
+    cout << "Flips: " << endl;
     for (auto &flip : move.flips) {
+        cout << flip.y << flip.x << endl;
         board[flip.y][flip.x] = currentPlayer;
         if (currentPlayer == WHITE) {
             score[WHITE]++;
@@ -205,28 +216,27 @@ vector<Board::Move> Board::LegalMoves(int player) {
 
             Board::Move move = Board::Move(i, j);
 
-            for (auto &mode : directions) {
+            for (auto &direction : directions) {
                 for (auto &step : steps) {
                     int y = move.grid.y, x = move.grid.x;
                     vector<Board::Grid> trace;
-                    this->MoveAlong(y, x, mode, step);
+                    this->MoveAlong(y, x, direction, step);
                     //not a valid direction unless opponent's piece is next
                     if ((board[y][x] == player) || (board[y][x] == 0)) {
                         continue;
                     }
-                    this->MoveAlong(y, x, mode, step);
                     while (OnBoard(y, x)) {
                         if (board[y][x] == player) {
                             //mark move as valid and append trace to flips vector
                             move.valid = true;
                             move.flips.insert(move.flips.end(), trace.begin(), trace.end());
                             break;
-                        } else if (board[y][x] == 0)
+                        } else if (board[y][x] == 0) {
                             break;
-                        else {
+                        } else {
                             trace.emplace_back(Board::Grid(y, x)); //keep track of potential flips
                         }
-                        this->MoveAlong(y, x, mode, step);
+                        this->MoveAlong(y, x, direction, step);
                     }
                 }
             }

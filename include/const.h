@@ -7,8 +7,8 @@
 
 #define BOARDSIZE 8
 #define NUMGRIDS 64
-#define WHITE 1
-#define BLACK 2
+#define WHITE 2
+#define BLACK 1
 
 #define RESET   "\033[0m"
 #define RED     "\033[31m"

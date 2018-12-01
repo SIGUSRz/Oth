@@ -60,6 +60,8 @@ int main(int argc, const char *argv[]) {
         cerr << "Wrong game type" << endl;
         return -1;
     }
-    game.setup(gameType, board_file);
+    game.setup(gameType, timeLimit, board_file);
+
+    game.Play();
     return 0;
 }
