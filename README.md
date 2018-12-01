@@ -9,7 +9,7 @@ A __CLion__ Project with CMake
 ## Installation
 Before Run, set path variable
 ```
-DYLD_LIBRARY_PATH=${BOOST_LIBRARY_PATH}
+DYLD_LIBRARY_PATH=${BOOST_LIBRARY_PATH} 
 ```
 
 ## Parameters
