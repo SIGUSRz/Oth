@@ -9,6 +9,9 @@
 
 using namespace std;
 
+const int directions[4] = {1, 2, 3, 4};
+const int steps[2] = {-1, 1};
+
 Board::Grid::Grid(int y, int x) {
     this->y = y;
     this->x = x;
@@ -43,18 +46,18 @@ Board::Board() {
 
 
 // constructor with board
-Board::Board(Board &b) {
+Board::Board(const Board &b) {
     for (int i = 0; i < BOARDSIZE; i++) {
         for (int j = 0; j < BOARDSIZE; j++) {
-            this->board[i][j] = b.board[i][j];
+            board[i][j] = b.board[i][j];
         }
     }
     for (int i = 0; i < 3; i++) {
-        this->score[i] = b.score[i];
+        score[i] = b.score[i];
     }
 
-    this->currentPlayer = b.currentPlayer;
-    this->playerPassed = b.playerPassed;
+    currentPlayer = b.currentPlayer;
+    playerPassed = b.playerPassed;
 }
 
 //  constructor with exist board and player

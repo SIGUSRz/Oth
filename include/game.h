@@ -20,15 +20,15 @@ public:
     void Play();
 
 private:
-//    int heuristic(Board board);
-//    int alphabeta(Board board, int depth, int alpha, int beta, bool maxPlayer);
-//    bool smartMove();
+    int Minimax_heuristic(Board board);
+    int alphabetaPruning(Board board, int depth, int alpha, int beta, bool maxPlayer);
+    bool AutoMove();
     bool HumanMove();
     bool RandomMove();
 
-    int firstPlayer;
-    Board *board;
-    int maxPlayer;
+    int firstPlayer = 0;
+    Board board;
+    int maxPlayer; //The Max of MiniMax
     bool humanPlayer[3];
     int timeLimit;
     clock_t startTime;

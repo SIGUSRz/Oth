@@ -34,16 +34,14 @@ public:
 
     Board();
 
-    Board(Board &b);
+    Board(const Board &b);
 
-    Board(int board[8][8], int current_player);
+    Board(int board[BOARDSIZE][BOARDSIZE], int current_player);
 
     int currentPlayer;
     int score[3];
     int board[BOARDSIZE][BOARDSIZE];
     bool playerPassed;
-    const int directions[4] = {1, 2, 3, 4};
-    const int steps[2] = {-1, 1};
 
     void PrintBoard(vector<Board::Move> moves, bool player, int firstPlayer);
 

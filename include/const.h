@@ -16,6 +16,8 @@
 #define YELLOW  "\033[33m"
 #define BLUE    "\033[34m"
 
+#define STOPTIME 0.9
+
 #define MAX(a,b) (a > b) ? a : b
 #define MIN(a,b) (a < b) ? a : b
 
