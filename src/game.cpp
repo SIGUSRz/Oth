@@ -182,8 +182,8 @@ int Game::Minimax_heuristic(Board board) {
     }
     double cornerLossScore = -25.0 * cornerLoss;
 
-    return pW * pieceScore + cW * cornerScore + clW * cornerLossScore +
-           eW * edgeScore + fW * frontierScore + mW * moveScore;
+    return int(ceil(pW * pieceScore + cW * cornerScore + clW * cornerLossScore +
+           eW * edgeScore + fW * frontierScore + mW * moveScore - 0.5));
 }
 
 int Game::alphabetaPruning(Board board, int depth, int alpha, int beta, bool maxPlayer) {
@@ -213,6 +213,7 @@ int Game::alphabetaPruning(Board board, int depth, int alpha, int beta, bool max
 
     if (maxPlayer) {
         int value = INT_MIN;
+//        double v = numeric_limits<double>::max();
         for (auto &move : m) {
             Board testBoard = board;
             board.ApplyMove(move);
@@ -278,9 +279,9 @@ bool Game::AutoMove() {
             } // Not randomizing when score == alpha
         }
     }
-    cout << "Depth: " << depth << " in " <<
-         ((float) (clock() - startTime)) / CLOCKS_PER_SEC << " seconds" << endl;
-    cout << "Choose move " << moveIdx << endl;
+//    cout << "Depth: " << depth << " in " <<
+//         ((float) (clock() - startTime)) / CLOCKS_PER_SEC << " seconds" << endl;
+//    cout << "Choose move " << moveIdx << endl;
     board.PrintBoard(vector<Board::Move>(1, move), true, firstPlayer);
     board.ApplyMove(move);
     return board.SwitchPlayer(false);
@@ -296,9 +297,9 @@ void Game::Play() {
 
     while (!gameOver) {
         if (humanPlayer[board.currentPlayer]) {
-            gameOver = HumanMove();
+            gameOver = AutoMove();
         } else {
-            gameOver = RandomMove();
+            gameOver = AutoMove();
         }
     }
     board.PrintBoard(vector<Board::Move>(), false, firstPlayer);

@@ -26,7 +26,7 @@ endif()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN})
 
 include_directories(${INC})
-add_library(board ${SRC}/board.cpp)
+add_library(board ${SRC}/board.cpp include/board.h)
 add_library(game ${SRC}/game.cpp)
 target_link_libraries(game board)
 add_executable(othello ${SRC}/othello.cpp)

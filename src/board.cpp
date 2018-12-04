@@ -194,9 +194,9 @@ void Board::ApplyMove(Board::Move move) {
     } else {
         score[BLACK]++;
     }
-    cout << "Flips: " << endl;
+//    cout << "Flips: " << endl;
     for (auto &flip : move.flips) {
-        cout << flip.y << flip.x << endl;
+//        cout << flip.y << flip.x << endl;
         board[flip.y][flip.x] = currentPlayer;
         if (currentPlayer == WHITE) {
             score[WHITE]++;
