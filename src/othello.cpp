@@ -2,22 +2,25 @@
 #include <vector>
 #include <string>
 #include <boost/program_options.hpp>
-#include "game.h"
+#include "game.hpp"
 
 using namespace std;
 namespace po = boost::program_options;
 
 int main(int argc, const char *argv[]) {
     string board_file;
-    int gameType, timeLimit;
     Game game;
+    float timeLimit = 0.0;
+    int p1, p2;
     try {
         po::options_description desc("Othello Usage");
         desc.add_options()
                 ("help", "produce help message")
-                ("type,t", po::value<int>(&gameType)->required(),
-                 "game type: 0 - player first, 1 - opponent first")
-                ("limit,l", po::value<int>(&timeLimit)->required(),
+                ("player,p", po::value<int>(&p1)->required(),
+                 "first player: 0 - computer, 1 - human")
+                ("opponent,o", po::value<int>(&p2)->required(),
+                 "second player: 0 - computer, 1 - human")
+                ("limit,l", po::value<float>(&timeLimit)->required(),
                  "time limit for each steps");
         po::options_description hidden;
         hidden.add_options()
@@ -39,11 +42,14 @@ int main(int argc, const char *argv[]) {
             return 0;
         }
 
-        if (vm.count("type")) {
-            gameType = vm["type"].as<int>();
+        if (vm.count("player")) {
+            p1 = vm["player"].as<int>();
+        }
+        if (vm.count("opponent")) {
+            p2 = vm["opponent"].as<int>();
         }
         if (vm.count("limit")) {
-            timeLimit = vm["limit"].as<int>();
+            timeLimit = vm["limit"].as<float>();
         }
         if (vm.count("include")) {
             board_file = vm["include"].as<string>();
@@ -56,11 +62,15 @@ int main(int argc, const char *argv[]) {
         cerr << "Unknown Error" << endl;
         return -1;
     }
-    if (!(gameType == 0 || gameType == 1)) {
+    if (!(p1 == 0 || p1 == 1)) {
         cerr << "Wrong game type" << endl;
         return -1;
     }
-    game.setup(gameType, timeLimit, board_file);
+    if (!(p2 == 0 || p2 == 1)) {
+        cerr << "Wrong game type" << endl;
+        return -1;
+    }
+    game.setup(p1, (int)timeLimit, board_file);
 
     game.Play();
     return 0;

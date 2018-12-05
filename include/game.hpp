@@ -8,8 +8,8 @@
 #include <string>
 #include <ctime>
 #include <random>
-#include "board.h"
-#include "const.h"
+#include "board.hpp"
+#include "const.hpp"
 
 using namespace std;
 
@@ -26,7 +26,7 @@ private:
     bool HumanMove();
     bool RandomMove();
 
-    int firstPlayer = 0;
+    int firstPlayer;
     Board board;
     int maxPlayer; //The Max of MiniMax
     bool humanPlayer[3];

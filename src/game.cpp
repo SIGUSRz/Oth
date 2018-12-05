@@ -11,9 +11,9 @@
 #include <cctype>
 #include <unistd.h>
 #include <cstdlib>
-#include "game.h"
-#include "board.h"
-#include "const.h"
+#include "game.hpp"
+#include "board.hpp"
+#include "const.hpp"
 
 using namespace std;
 
@@ -281,7 +281,7 @@ bool Game::AutoMove() {
     }
 //    cout << "Depth: " << depth << " in " <<
 //         ((float) (clock() - startTime)) / CLOCKS_PER_SEC << " seconds" << endl;
-//    cout << "Choose move " << moveIdx << endl;
+    cout << "Choose move " << moveIdx << endl;
     board.PrintBoard(vector<Board::Move>(1, move), true, firstPlayer);
     board.ApplyMove(move);
     return board.SwitchPlayer(false);
@@ -297,7 +297,7 @@ void Game::Play() {
 
     while (!gameOver) {
         if (humanPlayer[board.currentPlayer]) {
-            gameOver = AutoMove();
+            gameOver = HumanMove();
         } else {
             gameOver = AutoMove();
         }

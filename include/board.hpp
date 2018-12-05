@@ -6,7 +6,7 @@
 #define OTH_BOARD_H
 
 #include <vector>
-#include "const.h"
+#include "const.hpp"
 
 using namespace std;
 

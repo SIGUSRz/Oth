@@ -4,8 +4,8 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
-#include "const.h"
-#include "board.h"
+#include "const.hpp"
+#include "board.hpp"
 
 using namespace std;
 
