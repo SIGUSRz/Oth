@@ -10,22 +10,22 @@
 #include <random>
 #include "board.hpp"
 #include "const.hpp"
+#include "heuristic.hpp"
 
 using namespace std;
 
 class Game{
 public:
-    Game() = default;
     void setup(int gameType, int timeLimit, string file_list);
     void Play();
 
 private:
-    int Minimax_heuristic(Board board);
     int alphabetaPruning(Board board, int depth, int alpha, int beta, bool maxPlayer);
     bool AutoMove();
     bool HumanMove();
     bool RandomMove();
 
+    Heuristic heuristic;
     int firstPlayer;
     Board board;
     int maxPlayer; //The Max of MiniMax
