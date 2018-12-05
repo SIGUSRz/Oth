@@ -40,7 +40,7 @@ public:
 
     int currentPlayer;
     int score[3];
-    int board[BOARDSIZE][BOARDSIZE];
+    vector<vector<int> > board;
     bool playerPassed;
 
     void PrintBoard(vector<Board::Move> moves, bool player, int firstPlayer);

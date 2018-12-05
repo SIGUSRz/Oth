@@ -9,6 +9,7 @@
 #define NUMGRIDS 64
 #define WHITE 2
 #define BLACK 1
+#define EMPTY 0
 
 #define RESET   "\033[0m"
 #define RED     "\033[31m"

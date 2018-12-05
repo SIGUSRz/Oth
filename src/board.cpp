@@ -26,10 +26,12 @@ Board::Move::Move(int y, int x) {
 //constructor
 Board::Board() {
     //empty board
-    for (auto &i : board) {
-        for (auto &j : i) {
-            j = 0;
+    for (int i = 0; i < BOARDSIZE; i++) {
+        vector<int> tmp;
+        for (int j = 0; j < BOARDSIZE; j++) {
+            tmp.push_back(0);
         }
+        board.push_back(tmp);
     }
 
     //starting pieces
@@ -48,9 +50,11 @@ Board::Board() {
 // constructor with board
 Board::Board(const Board &b) {
     for (int i = 0; i < BOARDSIZE; i++) {
+        vector<int> tmp;
         for (int j = 0; j < BOARDSIZE; j++) {
-            board[i][j] = b.board[i][j];
+            tmp.push_back(b.board[i][j]);
         }
+        board.push_back(tmp);
     }
     for (int i = 0; i < 3; i++) {
         score[i] = b.score[i];
@@ -225,8 +229,10 @@ vector<Board::Move> Board::LegalMoves(int player) {
                     vector<Board::Grid> trace;
                     this->MoveAlong(y, x, direction, step);
                     //not a valid direction unless opponent's piece is next
-                    if ((board[y][x] == player) || (board[y][x] == 0)) {
-                        continue;
+                    if (OnBoard(y, x)) {
+                        if ((board[y][x] == player) || (board[y][x] == 0)) {
+                            continue;
+                        }
                     }
                     while (OnBoard(y, x)) {
                         if (board[y][x] == player) {

@@ -22,6 +22,7 @@ void Game::setup(int gameType, int tLimit, string board_file) {
         case (0):
             humanPlayer[BLACK] = true;
             humanPlayer[WHITE] = false;
+            firstPlayer = gameType;
             break;
         case (1):
             humanPlayer[BLACK] = false;
@@ -29,7 +30,6 @@ void Game::setup(int gameType, int tLimit, string board_file) {
         default:
             throw;
     }
-    firstPlayer = gameType;
     if (!board_file.empty()) {
         int state[BOARDSIZE][BOARDSIZE];
         int player;
@@ -107,9 +107,9 @@ int Game::alphabetaPruning(Board board, int depth, int alpha, int beta, bool max
 
     if ((float) (clock() - startTime) / CLOCKS_PER_SEC > STOPTIME * timeLimit) {
         timeout = true;
-        return heuristic.Minimax_Heuristic(board, maxPlayer);
+        return heuristic.Minimax_Heuristic(board, maxPlayer, false);
     } else if (depth == 0) {
-        return heuristic.Minimax_Heuristic(board, maxPlayer);
+        return heuristic.Minimax_Heuristic(board, maxPlayer, false);
     } else {
         depth--;
     }
@@ -119,7 +119,7 @@ int Game::alphabetaPruning(Board board, int depth, int alpha, int beta, bool max
         if (board.TerminalState(true)) {
             Board testBoard = board;
             testBoard.SwitchPlayer(false);
-            return heuristic.Minimax_Heuristic(board, maxPlayer);
+            return heuristic.Minimax_Heuristic(board, maxPlayer, true);
         } else {
             Board testBoard = board;
             testBoard.SwitchPlayer(true);
