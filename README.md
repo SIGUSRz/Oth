@@ -14,6 +14,7 @@ DYLD_LIBRARY_PATH=${BOOST_LIBRARY_PATH}
 
 ## Parameters
 * --help: help
-* --type, -t: [required] game type, 0: player first, 1: compuer first.
+* --black, -b: [required] black player, 0: AI, 1: human.
+* --white, -w: [required] white player, 0: AI, 1: human.
 * --limit, -l: [required] time limit for each step, __usage not implemented__
 * --include, -I: [optional] include board file

@@ -65,10 +65,10 @@ Board::Move Player::AIMove(Board board, bool &pass) {
     }
 
     int depth;
-    int remainPiece = NUMGRIDS - board.discOnBoard;
+    int depthLimit = NUMGRIDS - board.discOnBoard;
     int score = 0;
     int moveIdx = 0;
-    for (depth = 0; depth < remainPiece &&
+    for (depth = 0; depth < depthLimit &&
                     this->stopTimer(startTime) < STOPTIME * board.timeLimit; depth++) {
         int alpha = INT_MIN, beta = INT_MAX;
         for (int i = 0; i < legalMove.size(); i++) {
@@ -114,7 +114,7 @@ int Player::AlphaBetaPruning(Board board, int depth,
             Board testBoard = board;
             testBoard.pass[0] = false;
             testBoard.pass[1] = true;
-            return AlphaBetaPruning(testBoard, depth, startTime,
+            return AlphaBetaPruning(testBoard, depth++, startTime,
                                     alpha, beta, !maxPlayer);
         }
     }
@@ -125,7 +125,7 @@ int Player::AlphaBetaPruning(Board board, int depth,
             Board testBoard = board;
             testBoard.UpdateBoard(move);
             testBoard.SwitchPlayer();
-            int score = AlphaBetaPruning(testBoard, depth, startTime, alpha, beta, false);
+            int score = AlphaBetaPruning(testBoard, depth++, startTime, alpha, beta, false);
             value = MAX(value, score);
 
             if (value >= b) {

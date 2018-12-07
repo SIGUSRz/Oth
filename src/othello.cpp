@@ -16,9 +16,9 @@ int main(int argc, const char *argv[]) {
         po::options_description desc("Othello Usage");
         desc.add_options()
                 ("help", "produce help message")
-                ("player,p", po::value<int>(&p1)->required(),
+                ("black,b", po::value<int>(&p1)->required(),
                  "first player: 0 - computer, 1 - human")
-                ("opponent,o", po::value<int>(&p2)->required(),
+                ("white,w", po::value<int>(&p2)->required(),
                  "second player: 0 - computer, 1 - human")
                 ("limit,l", po::value<float>(&timeLimit)->required(),
                  "time limit for each steps");
@@ -42,11 +42,11 @@ int main(int argc, const char *argv[]) {
             return 0;
         }
 
-        if (vm.count("player")) {
-            p1 = vm["player"].as<int>();
+        if (vm.count("black")) {
+            p1 = vm["black"].as<int>();
         }
-        if (vm.count("opponent")) {
-            p2 = vm["opponent"].as<int>();
+        if (vm.count("white")) {
+            p2 = vm["white"].as<int>();
         }
         if (vm.count("limit")) {
             timeLimit = vm["limit"].as<float>();

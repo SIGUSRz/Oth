@@ -164,7 +164,7 @@ void Board::UpdateBoard(Board::Move move) {
         }
     }
     (this->discOnBoard)++;
-    this->currentPlayer = this->currentPlayer == BLACK ? WHITE : BLACK;
+    this->SwitchPlayer();
 }
 
 bool Board::MoveAlong(int &y, int &x, int direction, int step) {
