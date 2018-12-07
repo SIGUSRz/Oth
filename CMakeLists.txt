@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(Oth)
 
 set(CMAKE_CXX_STANDARD 17)
-set(BOOST_ROOT /usr/local/boost)
+set(BOOST_ROOT /usr/local/boost-1.68.0)
 set(Boost_INCLUDE_DIR ${BOOST_ROOT}/include)
 set(Boost_LIBRARY_DIR ${BOOST_ROOT}/lib)
 set(LINK_PROGRAM_OPTIONS "-lboost_program_options")
