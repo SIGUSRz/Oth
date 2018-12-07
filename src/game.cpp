@@ -56,6 +56,8 @@ void Game::ApplyMove() {
     }
     if (!this->board.pass[0]) {
         this->board.UpdateBoard(move);
+    } else {
+        this->board.SwitchPlayer();
     }
     this->currentColor = this->board.currentPlayer;
     this->board.PrintBoard(this->board.FindLegalMoves(this->currentColor));

@@ -64,6 +64,10 @@ Board::Move Player::AIMove(Board board, bool &pass) {
         return move;
     }
 
+    for (int i = 0; i < legalMove.size(); i++) {
+        cout << i << ": [" << legalMove[i].grid.y << "," << legalMove[i].grid.x << "]" << endl;
+    }
+
     int depth;
     int depthLimit = NUMGRIDS - board.discOnBoard;
     int score = 0;

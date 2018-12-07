@@ -82,6 +82,7 @@ Board::Board(int boardState[8][8], int currentPlayer) {
 
 // print board: player move in yellow, computer move in green
 void Board::PrintBoard(vector<Board::Move> moves) {
+    cout << endl;
     cout << "Black Valid Move: " << GREEN << setw(2) << 0 << RESET << endl;
     cout << "White Valid Move: " << YELLOW << setw(2) << 0 << RESET << endl;
     cout << "    0  1  2  3  4  5  6  7" << endl;
