@@ -29,70 +29,61 @@ Board::Board() {
     for (int i = 0; i < BOARDSIZE; i++) {
         vector<int> tmp;
         for (int j = 0; j < BOARDSIZE; j++) {
-            tmp.push_back(0);
+            tmp.push_back(EMPTY);
         }
-        board.push_back(tmp);
+        this->board.push_back(tmp);
     }
 
     //starting pieces
-    board[4][3] = BLACK;
-    board[3][4] = BLACK;
-    board[3][3] = WHITE;
-    board[4][4] = WHITE;
+    this->board[4][3] = BLACK;
+    this->board[3][4] = BLACK;
+    this->board[3][3] = WHITE;
+    this->board[4][4] = WHITE;
 
-    currentPlayer = BLACK;
-    playerPassed = false;
-    score[BLACK] = 2;
-    score[WHITE] = 2;
+    this->currentPlayer = BLACK;
+    this->pass[0] = false;
+    this->pass[1] = false;
+    this->blackScore = 2;
+    this->whiteScore = 2;
 }
 
 
-// constructor with board
+// copy constructor
 Board::Board(const Board &b) {
     for (int i = 0; i < BOARDSIZE; i++) {
         vector<int> tmp;
         for (int j = 0; j < BOARDSIZE; j++) {
             tmp.push_back(b.board[i][j]);
         }
-        board.push_back(tmp);
+        this->board.push_back(tmp);
     }
-    for (int i = 0; i < 3; i++) {
-        score[i] = b.score[i];
-    }
+    this->blackScore = b.blackScore;
+    this->whiteScore = b.whiteScore;
 
-    currentPlayer = b.currentPlayer;
-    playerPassed = b.playerPassed;
+    this->currentPlayer = b.currentPlayer;
 }
 
 //  constructor with exist board and player
 Board::Board(int boardState[8][8], int currentPlayer) {
-    score[BLACK] = 0;
-    score[WHITE] = 0;
+    this->blackScore = 0;
+    this->whiteScore = 0;
     for (int i = 0; i < BOARDSIZE; i++) {
         for (int j = 0; j < BOARDSIZE; j++) {
             board[i][j] = boardState[i][j];
             if (boardState[i][j] == WHITE) {
-                score[WHITE]++;
+                this->whiteScore++;
             } else if (boardState[i][j] == BLACK) {
-                score[BLACK]++;
+                this->blackScore++;
             }
         }
     }
     this->currentPlayer = currentPlayer;
-    playerPassed = false;
 }
 
 // print board: player move in yellow, computer move in green
-void Board::PrintBoard(vector<Board::Move> moves, bool player, int firstPlayer) {
-    if (firstPlayer == 0) {
-        cout << "Your Piece: " << RED << setw(2) << BLACK << RESET << endl;
-        cout << "Computer Piece: " << BLUE << setw(2) << WHITE << RESET << endl;
-    } else {
-        cout << "Your Piece: " << BLUE << setw(2) << WHITE << RESET << endl;
-        cout << "Computer Piece: " << RED << setw(2) << BLACK << RESET << endl;
-    }
-    cout << "Your Valid Move: " << GREEN << setw(2) << 0 << RESET << endl;
-    cout << "Computer Valid Move: " << YELLOW << setw(2) << 0 << RESET << endl;
+void Board::PrintBoard(vector<Board::Move> moves) {
+    cout << "Black Valid Move: " << GREEN << setw(2) << 0 << RESET << endl;
+    cout << "White Valid Move: " << YELLOW << setw(2) << 0 << RESET << endl;
     cout << "    0  1  2  3  4  5  6  7" << endl;
     cout << "   ------------------------" << endl;
     for (int i = 0; i < BOARDSIZE; i++) {
@@ -101,10 +92,10 @@ void Board::PrintBoard(vector<Board::Move> moves, bool player, int firstPlayer) 
             bool potentialMove = false;
             for (int k = 0; k < moves.size(); k++) {
                 if (moves[k].grid.y == i && moves[k].grid.x == j) {
-                    if (!player) {
+                    if (currentPlayer == BLACK) {
                         cout << GREEN << setw(2) << board[i][j] << RESET << " ";
                     } else {
-                        cout << YELLOW << setw(2) << k << RESET << " ";
+                        cout << YELLOW << setw(2) << board[i][j] << RESET << " ";
                     }
                     potentialMove = true;
                 }
@@ -143,6 +134,38 @@ bool Board::OnFrontier(int y, int x) {
     return false;
 }
 
+bool Board::OnBoard(int y, int x) {
+    return (x >= 0) && (x < BOARDSIZE) && (y >= 0) && (y < BOARDSIZE);
+}
+
+bool Board::TerminalState() {
+    return (this->pass[0] && this->pass[1]) || (this->discOnBoard == NUMGRIDS);
+}
+
+void Board::SwitchPlayer() {
+    this->currentPlayer = this->currentPlayer == BLACK ? WHITE : BLACK;
+}
+
+void Board::UpdateBoard(Board::Move move) {
+    this->board[move.grid.y][move.grid.x] = this->currentPlayer;
+    if (this->currentPlayer == WHITE) {
+        this->whiteScore++;
+    } else {
+        this->blackScore++;
+    }
+    for (auto &flip : move.flips) {
+        this->board[flip.y][flip.x] = this->currentPlayer;
+        if (this->currentPlayer == WHITE) {
+            this->whiteScore++;
+            this->blackScore--;
+        } else {
+            this->blackScore++;
+            this->whiteScore--;
+        }
+    }
+    (this->discOnBoard)++;
+    this->currentPlayer = this->currentPlayer == BLACK ? WHITE : BLACK;
+}
 
 bool Board::MoveAlong(int &y, int &x, int direction, int step) {
     if ((step != 1) && (step != -1)) {
@@ -174,50 +197,12 @@ bool Board::MoveAlong(int &y, int &x, int direction, int step) {
     }
 }
 
-bool Board::OnBoard(int y, int x) {
-    return (x >= 0) && (x < BOARDSIZE) && (y >= 0) && (y < BOARDSIZE);
-}
-
-bool Board::TerminalState(bool currentPlayerPass) {
-    return (playerPassed && currentPlayerPass) || (score[BLACK] + score[WHITE] == NUMGRIDS);
-}
-
-bool Board::SwitchPlayer(bool currentPlayerPass) {
-    if (this->TerminalState(currentPlayerPass)) {
-        return true;
-    }
-    currentPlayer = (currentPlayer == WHITE) ? BLACK : WHITE;
-    playerPassed = false;
-    return false;
-}
-
-void Board::ApplyMove(Board::Move move) {
-    board[move.grid.y][move.grid.x] = currentPlayer;
-    if (currentPlayer == WHITE) {
-        score[WHITE]++;
-    } else {
-        score[BLACK]++;
-    }
-//    cout << "Flips: " << endl;
-    for (auto &flip : move.flips) {
-//        cout << flip.y << flip.x << endl;
-        board[flip.y][flip.x] = currentPlayer;
-        if (currentPlayer == WHITE) {
-            score[WHITE]++;
-            score[BLACK]--;
-        } else {
-            score[BLACK]++;
-            score[WHITE]--;
-        }
-    }
-}
-
-vector<Board::Move> Board::LegalMoves(int player) {
+vector<Board::Move> Board::FindLegalMoves(int player) {
     vector<Board::Move> moves;
 
     for (int i = 0; i < BOARDSIZE; i++) {
         for (int j = 0; j < BOARDSIZE; j++) {
-            if (board[i][j] != 0) {
+            if (board[i][j] != EMPTY) {
                 continue;
             }
 
@@ -230,7 +215,7 @@ vector<Board::Move> Board::LegalMoves(int player) {
                     this->MoveAlong(y, x, direction, step);
                     //not a valid direction unless opponent's piece is next
                     if (OnBoard(y, x)) {
-                        if ((board[y][x] == player) || (board[y][x] == 0)) {
+                        if ((board[y][x] == player) || (board[y][x] == EMPTY)) {
                             continue;
                         }
                     }
@@ -249,22 +234,11 @@ vector<Board::Move> Board::LegalMoves(int player) {
                     }
                 }
             }
-            if (move.valid)
+            if (move.valid) {
                 moves.push_back(move);
+            }
         }
     }
     return moves;
-}
-
-void Board::GameOver() {
-    cout << "GAME OVER" << endl;
-    cout << "white: " << score[WHITE] << " black : " << score[BLACK] << endl;
-    if(score[WHITE] > score[BLACK]) {
-        cout << "White wins!" << endl;
-    } else if(score[WHITE] < score[BLACK]) {
-        cout << "Black wins!" << endl;
-    } else {
-        cout << "Tie!" << endl;
-    }
 }
 #endif //_BOARD_CPP_

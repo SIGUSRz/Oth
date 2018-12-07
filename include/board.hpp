@@ -39,23 +39,22 @@ public:
     Board(int board[BOARDSIZE][BOARDSIZE], int current_player);
 
     int currentPlayer;
-    int score[3];
-    vector<vector<int> > board;
-    bool playerPassed;
+    int discOnBoard, blackScore, whiteScore;
+    vector<vector<int>> board;
+    float timeLimit;
+    bool pass[2];
 
-    void PrintBoard(vector<Board::Move> moves, bool player, int firstPlayer);
+    void PrintBoard(vector<Board::Move> moves);
 
     bool OnFrontier(int y, int x);
 
-    bool TerminalState(bool currentPlayerPass);
+    void UpdateBoard(Board::Move move);
 
-    bool SwitchPlayer(bool currentPlayerPass);
+    bool TerminalState();
 
-    void ApplyMove(Board::Move move);
+    void SwitchPlayer();
 
-    vector<Board::Move> LegalMoves(int player);
-
-    void GameOver();
+    vector<Board::Move> FindLegalMoves(int player);
 
 private:
     bool OnBoard(int y, int x);

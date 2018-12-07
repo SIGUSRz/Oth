@@ -18,7 +18,6 @@ public:
 private:
     int maxPlayer;
     int minPlayer;
-    int discOnBoard;
 
     int Utility(Board board);
 

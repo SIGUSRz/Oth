@@ -5,34 +5,37 @@
 #ifndef OTH_GAME_H
 #define OTH_GAME_H
 
+#include <iostream>
 #include <string>
-#include <ctime>
+#include <fstream>
+#include <vector>
 #include <random>
+#include <climits>
+#include <ctime>
+#include <cctype>
+#include <iomanip>
+#include <cstdlib>
+#include "game.hpp"
+#include "player.hpp"
 #include "board.hpp"
 #include "const.hpp"
-#include "heuristic.hpp"
 
 using namespace std;
 
 class Game{
 public:
-    void setup(int gameType, int timeLimit, string file_list);
+    void setup(int p1, int p2, float timeLimit, string file_list);
     void Play();
+    void ApplyMove();
+    void CheckGameOver();
 
 private:
-    int alphabetaPruning(Board board, int depth, int alpha, int beta, bool maxPlayer);
-    bool AutoMove();
-    bool HumanMove();
-    bool RandomMove();
 
-    Heuristic heuristic;
-    int firstPlayer;
+    Player blackPlayer;
+    Player whitePlayer;
+    bool gameOver;
+    int currentColor;
     Board board;
-    int maxPlayer; //The Max of MiniMax
-    bool humanPlayer[3];
-    int timeLimit;
-    clock_t startTime;
-    bool timeout;
     minstd_rand randomizer;
 };
 

@@ -70,7 +70,7 @@ int main(int argc, const char *argv[]) {
         cerr << "Wrong game type" << endl;
         return -1;
     }
-    game.setup(p1, (int)timeLimit, board_file);
+    game.setup(p1, p2, timeLimit, board_file);
 
     game.Play();
     return 0;

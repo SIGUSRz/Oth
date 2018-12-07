@@ -7,7 +7,7 @@
 
 #define BOARDSIZE 8
 #define NUMGRIDS 64
-#define WHITE 2
+#define WHITE -1
 #define BLACK 1
 #define EMPTY 0
 

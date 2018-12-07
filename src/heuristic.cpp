@@ -1,69 +1,69 @@
 #include "heuristic.hpp"
 
-int Heuristic::Minimax_Heuristic(Board board, int maxp, bool terminal) {
-    maxPlayer = maxp;
-    minPlayer = (maxPlayer == WHITE)
-                ? BLACK
-                : WHITE;
-
-    discOnBoard = board.score[WHITE] + board.score[BLACK];
-    // At terminal state
-    if (terminal) {
-        return 100000 * Utility(board);
-    }
-
-    int pW = 2 * (board.score[maxPlayer] + board.score[minPlayer]);
-    int cW = 5000;
-    int clW = 2000;
-    int fW = 200;
-    int eW = 50;
-    int mW = 10 * (100 - (board.score[maxPlayer] + board.score[minPlayer]));
-
-    vector<int> res(2, 0);
-
-
-    if (discOnBoard <= 20) {
-        // Opening game
-        return 5 * MobilityScore(board)
-               + 5 * PotentialMobility(board)
-               + 20 * SquareWeights(board)
-               + 10000 * CornerScore(board) + 10000 * CornerLossScore(board);
-    } else if (discOnBoard <= 58) {
-        // Midgame
-        return 10 * DiscScore(board)
-               + 2 * MobilityScore(board)
-               + 2 * PotentialMobility(board)
-               + 10 * SquareWeights(board)
-               + 100 * Parity(board)
-               + 10000 * CornerScore(board) + 10000 * CornerLossScore(board);
-    } else {
-        // Endgame
-        return 500 * DiscScore(board)
-               + 500 * Parity(board)
-               + 10000 * CornerScore(board) + 10000 * CornerLossScore(board);
-    }
-}
+//int Heuristic::Minimax_Heuristic(Board board, int maxp, bool terminal) {
+//    maxPlayer = maxp;
+//    minPlayer = (maxPlayer == WHITE)
+//                ? BLACK
+//                : WHITE;
+//
+//    // At terminal state
+//    if (terminal) {
+//        return 100000 * this->Utility(board);
+//    }
+//
+//    int pW = 2 * board.discOnBoard;
+//    int cW = 5000;
+//    int clW = 2000;
+//    int fW = 200;
+//    int eW = 50;
+//    int mW = 10 * (100 - board.discOnBoard);
+//
+//    vector<int> res(2, 0);
+//
+//
+//    if (board.discOnBoard <= 20) {
+//        // Opening game
+//        return 5 * MobilityScore(board)
+//               + 5 * PotentialMobility(board)
+//               + 20 * SquareWeights(board)
+//               + 10000 * CornerScore(board) + 10000 * CornerLossScore(board);
+//    } else if (board.discOnBoard <= 58) {
+//        // Midgame
+//        return 10 * DiscScore(board)
+//               + 2 * MobilityScore(board)
+//               + 2 * PotentialMobility(board)
+//               + 10 * SquareWeights(board)
+//               + 100 * Parity(board)
+//               + 10000 * CornerScore(board) + 10000 * CornerLossScore(board);
+//    } else {
+//        // Endgame
+//        return 500 * DiscScore(board)
+//               + 500 * Parity(board)
+//               + 10000 * CornerScore(board) + 10000 * CornerLossScore(board);
+//    }
+//}
 
 int Heuristic::Utility(Board board) {
-    return board.score[BLACK] + board.score[WHITE];
+    if (maxPlayer == WHITE) {
+        return WHITE * board.discOnBoard;
+    } else {
+        return board.discOnBoard;
+    }
 }
 
 // Relative disc difference between the two players
 int Heuristic::DiscScore(Board board) {
-    int blackCount = board.score[BLACK];
-    int whiteCount = board.score[WHITE];
-
     if (maxPlayer == BLACK) {
-        return 100 * (blackCount - whiteCount) / (blackCount + whiteCount);
+        return 100 * (board.blackScore - board.whiteScore) / (board.blackScore + board.whiteScore);
     } else {
-        return 100 * (whiteCount - blackCount) / (blackCount + whiteCount);
+        return 100 * (board.whiteScore - board.blackScore) / (board.blackScore + board.whiteScore);
     }
 }
 
 // Number of possible moves
 int Heuristic::MobilityScore(Board board) {
-    vector<Board::Move> maxLegalMove = board.LegalMoves(maxPlayer);
-    vector<Board::Move> minLegalMove = board.LegalMoves(minPlayer);
+    vector<Board::Move> maxLegalMove = board.FindLegalMoves(maxPlayer);
+    vector<Board::Move> minLegalMove = board.FindLegalMoves(minPlayer);
     int maxMoves = (int) maxLegalMove.size();
     int minMoves = (int) minLegalMove.size();
     return 100 * (maxMoves - minMoves) / (maxMoves + minMoves + 1);
@@ -204,7 +204,7 @@ int Heuristic::CornerScore(Board board) {
 
 int Heuristic::CornerLossScore(Board board) {
     int cornerLoss = 0;
-    vector<Board::Move> minLegalMove = board.LegalMoves(minPlayer);
+    vector<Board::Move> minLegalMove = board.FindLegalMoves(minPlayer);
     for (auto &minMove : minLegalMove) {
         if (minMove.grid.y == 0 && minMove.grid.x == 0) {
             cornerLoss++;
@@ -274,7 +274,7 @@ int Heuristic::SquareWeights(Board board) {
 }
 
 int Heuristic::Parity(Board board) {
-    int squaresRemaining = NUMGRIDS - board.score[WHITE] - board.score[BLACK];
+    int squaresRemaining = NUMGRIDS - board.discOnBoard;
     if (squaresRemaining % 2 == 0) {
         return -1;
     } else {
@@ -310,86 +310,89 @@ void Heuristic::EdgeFrontierScore(Board board, vector<int> &res) {
     res[0] = edgeScore;
     res[1] = frontierScore;
 }
-//int Heuristic::Minimax_Heuristic(Board board, int maxPlayer) {
-//    int minPlayer = (maxPlayer == WHITE)
-//                    ? BLACK
-//                    : WHITE;
-//
-//    int pW = 2 * (board.score[maxPlayer] + board.score[minPlayer]);
-//    int cW = 5000;
-//    int clW = 2000;
-//    int fW = 200;
-//    int eW = 50;
-//    int mW = 10 * (100 - (board.score[maxPlayer] + board.score[minPlayer]));
-//
-//    double pieceScore = (100.0 * board.score[maxPlayer]) / (board.score[maxPlayer] + board.score[minPlayer]);
-//
-//    int maxCorner = 0, minCorner = 0;
-//    if (board.board[0][0] == maxPlayer) {
-//        maxCorner++;
-//    } else if (board.board[0][0] == minPlayer) {
-//        minCorner++;
-//    }
-//    if (board.board[0][BOARDSIZE - 1] == maxPlayer) {
-//        maxCorner++;
-//    } else if (board.board[0][BOARDSIZE - 1] == minPlayer) {
-//        minCorner++;
-//    }
-//    if (board.board[BOARDSIZE - 1][0] == maxPlayer) {
-//        maxCorner++;
-//    } else if (board.board[BOARDSIZE - 1][0] == minPlayer) {
-//        minCorner++;
-//    }
-//    if (board.board[BOARDSIZE - 1][BOARDSIZE - 1] == maxPlayer) {
-//        maxCorner++;
-//    } else if (board.board[BOARDSIZE - 1][BOARDSIZE - 1] == minPlayer) {
-//        minCorner++;
-//    }
-//    double cornerScore = 25.0 * (maxCorner - minCorner);
-//
-//    int maxEdge = 0, minEdge = 0;
-//    int maxFrontier = 0, minFrontier = 0;
-//    for (int i = 0; i < BOARDSIZE; i++) {
-//        for (int j = 0; j < BOARDSIZE; j++) {
-//            if (i == 0 || i == BOARDSIZE - 1 || j == 0 || j == BOARDSIZE - 1) {
-//                if (board.board[i][j] == maxPlayer) {
-//                    maxEdge++;
-//                } else if (board.board[i][j] == minPlayer) {
-//                    minEdge++;
-//                }
-//            } else if (board.board[i][j] != '0') {
-//                if (board.OnFrontier(i, j)) {
-//                    if (board.board[i][j] == maxPlayer) {
-//                        maxFrontier++;
-//                    } else if (board.board[i][j] == minPlayer) {
-//                        minFrontier++;
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    double edgeScore = 100.0 * maxEdge / (maxEdge + minEdge);
-//    double frontierScore = -100.0 * (maxFrontier - minFrontier); //Do not want frontier piece
-//
-//    vector<Board::Move> maxLegalMove = board.LegalMoves(maxPlayer);
-//    vector<Board::Move> minLegalMove = board.LegalMoves(minPlayer);
-//    double moveScore = 100.0 * maxLegalMove.size() / (maxLegalMove.size() + minLegalMove.size());
-//
-//    int cornerLoss = 0;
-//    for (auto &minMove : minLegalMove) {
-//        if (minMove.grid.y == 0 && minMove.grid.x == 0) {
-//            cornerLoss++;
-//        } else if (minMove.grid.y == 0 && minMove.grid.x == BOARDSIZE - 1) {
-//            cornerLoss++;
-//        } else if (minMove.grid.y == BOARDSIZE - 1 && minMove.grid.x == 0) {
-//            cornerLoss++;
-//        } else if (minMove.grid.y == BOARDSIZE - 1 && minMove.grid.x == BOARDSIZE - 1) {
-//            cornerLoss++;
-//        }
-//    }
-//    double cornerLossScore = -25.0 * cornerLoss;
-//
-//    return int(ceil(pW * pieceScore + cW * cornerScore + clW * cornerLossScore +
-//                    eW * edgeScore + fW * frontierScore + mW * moveScore - 0.5));
-//}
+
+int Heuristic::Minimax_Heuristic(Board board, int maxp, bool terminal) {
+    maxPlayer = maxp;
+    int minPlayer = (maxPlayer == WHITE)
+                    ? BLACK
+                    : WHITE;
+
+    int pW = 2 * board.discOnBoard;
+    int cW = 5000;
+    int clW = 2000;
+    int fW = 200;
+    int eW = 50;
+    int mW = 10 * (100 - board.discOnBoard);
+
+    int maxPiece = maxPlayer == BLACK ? board.blackScore : board.whiteScore;
+    double pieceScore = (100.0 * maxPiece) / (board.blackScore + board.whiteScore);
+
+    int maxCorner = 0, minCorner = 0;
+    if (board.board[0][0] == maxPlayer) {
+        maxCorner++;
+    } else if (board.board[0][0] == minPlayer) {
+        minCorner++;
+    }
+    if (board.board[0][BOARDSIZE - 1] == maxPlayer) {
+        maxCorner++;
+    } else if (board.board[0][BOARDSIZE - 1] == minPlayer) {
+        minCorner++;
+    }
+    if (board.board[BOARDSIZE - 1][0] == maxPlayer) {
+        maxCorner++;
+    } else if (board.board[BOARDSIZE - 1][0] == minPlayer) {
+        minCorner++;
+    }
+    if (board.board[BOARDSIZE - 1][BOARDSIZE - 1] == maxPlayer) {
+        maxCorner++;
+    } else if (board.board[BOARDSIZE - 1][BOARDSIZE - 1] == minPlayer) {
+        minCorner++;
+    }
+    double cornerScore = 25.0 * (maxCorner - minCorner);
+
+    int maxEdge = 0, minEdge = 0;
+    int maxFrontier = 0, minFrontier = 0;
+    for (int i = 0; i < BOARDSIZE; i++) {
+        for (int j = 0; j < BOARDSIZE; j++) {
+            if (i == 0 || i == BOARDSIZE - 1 || j == 0 || j == BOARDSIZE - 1) {
+                if (board.board[i][j] == maxPlayer) {
+                    maxEdge++;
+                } else if (board.board[i][j] == minPlayer) {
+                    minEdge++;
+                }
+            } else if (board.board[i][j] != '0') {
+                if (board.OnFrontier(i, j)) {
+                    if (board.board[i][j] == maxPlayer) {
+                        maxFrontier++;
+                    } else if (board.board[i][j] == minPlayer) {
+                        minFrontier++;
+                    }
+                }
+            }
+        }
+    }
+
+    double edgeScore = 100.0 * maxEdge / (maxEdge + minEdge);
+    double frontierScore = -100.0 * (maxFrontier - minFrontier); //Do not want frontier piece
+
+    vector<Board::Move> maxLegalMove = board.FindLegalMoves(maxPlayer);
+    vector<Board::Move> minLegalMove = board.FindLegalMoves(minPlayer);
+    double moveScore = 100.0 * maxLegalMove.size() / (maxLegalMove.size() + minLegalMove.size());
+
+    int cornerLoss = 0;
+    for (auto &minMove : minLegalMove) {
+        if (minMove.grid.y == 0 && minMove.grid.x == 0) {
+            cornerLoss++;
+        } else if (minMove.grid.y == 0 && minMove.grid.x == BOARDSIZE - 1) {
+            cornerLoss++;
+        } else if (minMove.grid.y == BOARDSIZE - 1 && minMove.grid.x == 0) {
+            cornerLoss++;
+        } else if (minMove.grid.y == BOARDSIZE - 1 && minMove.grid.x == BOARDSIZE - 1) {
+            cornerLoss++;
+        }
+    }
+    double cornerLossScore = -25.0 * cornerLoss;
+
+    return int(ceil(pW * pieceScore + cW * cornerScore + clW * cornerLossScore +
+                    eW * edgeScore + fW * frontierScore + mW * moveScore - 0.5));
+}
