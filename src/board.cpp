@@ -60,7 +60,7 @@ Board::Board(const Board &b) {
     }
     this->blackScore = b.blackScore;
     this->whiteScore = b.whiteScore;
-    this->discOnBoard = b.discOnBoard;
+    this->discOnBoard = this->whiteScore + this->blackScore;
     this->timeLimit = b.timeLimit;
     this->currentPlayer = b.currentPlayer;
     this->pass[0] = b.pass[0];
@@ -87,8 +87,6 @@ Board::Board(int boardState[8][8], int currentPlayer) {
 // print board: player move in yellow, computer move in green
 void Board::PrintBoard(vector<Board::Move> moves) {
     cout << endl;
-    cout << "Black Valid Move: " << GREEN << setw(2) << 0 << RESET << endl;
-    cout << "White Valid Move: " << YELLOW << setw(2) << 0 << RESET << endl;
     cout << "    0  1  2  3  4  5  6  7" << endl;
     cout << "   ------------------------" << endl;
     for (int i = 0; i < BOARDSIZE; i++) {
@@ -117,6 +115,11 @@ void Board::PrintBoard(vector<Board::Move> moves) {
         cout << "|" << endl;
     }
     cout << "   ------------------------" << endl;
+    cout << "Black Valid Move: " << GREEN << setw(2) << 0 << RESET << endl;
+    cout << "White Valid Move: " << YELLOW << setw(2) << 0 << RESET << endl;
+    cout << "Black Score: " << RED << setw(2) << blackScore << RESET << endl;
+    cout << "White Score: " << BLUE << setw(2) << whiteScore << RESET << endl;
+    cout << "Total Disc: " << discOnBoard << endl;
 }
 
 // check if the grid is on frontier,
@@ -168,7 +171,7 @@ void Board::UpdateBoard(Board::Move move) {
             this->whiteScore--;
         }
     }
-    (this->discOnBoard)++;
+    this->discOnBoard = this->blackScore + this->whiteScore;
     this->SwitchPlayer();
 }
 

@@ -77,9 +77,6 @@ void Game::CheckGameOver() {
         }
         this->gameOver = true;
     } else {
-        if (!this->board.pass[0]) {
-            this->board.discOnBoard++;
-        }
         this->board.pass[1] = this->board.pass[0];
         this->board.pass[0] = false;
     }
