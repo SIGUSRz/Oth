@@ -1,10 +1,8 @@
-//
-// Created by ZengS on 2018/11/18.
-//
-
 #ifndef OTH_BOARD_H
 #define OTH_BOARD_H
 
+#include <iostream>
+#include <iomanip>
 #include <vector>
 #include "const.hpp"
 
@@ -27,7 +25,7 @@ public:
 
         Move(int y, int x);
 
-        Board::Grid grid;
+        Board::Grid grid = Grid();
         bool valid = false;
         vector<Grid> flips;
     };
@@ -41,7 +39,6 @@ public:
     int currentPlayer;
     int discOnBoard, blackScore, whiteScore;
     vector<vector<int>> board;
-    vector<Board::Move> heuristicMoves;
     float timeLimit;
     bool pass[2];
 

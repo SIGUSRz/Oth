@@ -30,12 +30,12 @@ Board::Move Player::HumanMove(Board board, bool &pass) {
     vector<Board::Move> m = board.FindLegalMoves(board.currentPlayer);
     Board::Move res = Board::Move();
     if (!m.empty()) {
-        for (size_t i = 0; i < m.size(); i++) {
+        for (int i = 0; i < static_cast<int>(m.size()); i++) {
             cout << i << ": [" << m[i].grid.y << "," << m[i].grid.x << "]" << endl;
         }
 
         //make sure the user inputs a valid move
-        while (!(moveNum < (int) m.size() && moveNum >= 0)) {
+        while (!(moveNum < static_cast<int>(m.size()) && moveNum >= 0)) {
             cout << "Your Move: " << endl;
             cin >> in;
             if (isdigit(in.c_str()[0])) {
@@ -66,7 +66,7 @@ Board::Move Player::AIMove(Board board, bool &pass) {
         return move;
     }
 
-    for (int i = 0; i < legalMove.size(); i++) {
+    for (int i = 0; i < static_cast<int>(legalMove.size()); i++) {
         cout << i << ": [" << legalMove[i].grid.y << "," << legalMove[i].grid.x << "]" << endl;
     }
 
@@ -76,7 +76,7 @@ Board::Move Player::AIMove(Board board, bool &pass) {
     int moveIdx = 0;
     int prevIdx = 0;
     int randMove;
-    int alpha = INT_MIN, beta;
+    int alpha, beta;
     for (depth = 0; depth < depthLimit &&
                     this->stopTimer(startTime) < STOPTIME * board.timeLimit; depth++) {
         alpha = INT_MIN;
@@ -85,7 +85,7 @@ Board::Move Player::AIMove(Board board, bool &pass) {
 #ifdef DEBUG
         cout << "Depth: " << depth << " Limit: " << depthLimit << endl;
 #endif
-        for (int i = 0; i < legalMove.size(); i++) {
+        for (int i = 0; i < static_cast<int>(legalMove.size()); i++) {
             Board testBoard = board;
             testBoard.UpdateBoard(legalMove[i]);
             score = AlphaBetaPruning(testBoard, depth, startTime, alpha, beta, false);

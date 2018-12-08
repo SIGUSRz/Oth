@@ -18,14 +18,7 @@ int Heuristic::Minimax_Heuristic(Board &board) {
         int StScore = 2000 * StabilityScore(board);
         int CScore = 5000 * CornerScore(board);
         int CLScore = 2000 * CornerLossScore(board);
-        int power = (int) (pow(2.0, MAX(0, this->GetCorner(board, maxPlayer))));
-//        cout << "Mobility: " << MScore
-//             << " PotentialMob: " << PMScore
-//             << " Square: " << SScore
-//             << " Stability: " << StScore
-//             << " Corner: " << CScore
-//             << " CornerLoss: " << CLScore
-//             << " Power: " << power << endl;
+        auto power = static_cast<int>(pow(2.0, MAX(0, this->GetCorner(board, maxPlayer))));
         return (MScore
                 + PMScore
                 + SScore
@@ -44,17 +37,7 @@ int Heuristic::Minimax_Heuristic(Board &board) {
         int StScore = 2000 * StabilityScore(board);
         int CScore = 5000 * CornerScore(board);
         int CLScore = 2000 * CornerLossScore(board);
-        int power = (int) (pow(2.0, MAX(0, this->GetCorner(board, maxPlayer))));
-//        cout << " Disc: " << DScore
-//             << " Mobility: " << MScore
-//             << " PotentialMob: " << PMScore
-//             << " Square: " << SScore
-//             << " Edge: " << EScore
-//             << " Frontier: " << FScore
-//             << " Stability: " << StScore
-//             << " Corner: " << CScore
-//             << " CornerLoss: " << CLScore
-//             << " Power: " << power << endl;
+        auto power = static_cast<int>(pow(2.0, MAX(0, this->GetCorner(board, maxPlayer))));
         return (DScore
                 + MScore
                 + PMScore
@@ -74,15 +57,7 @@ int Heuristic::Minimax_Heuristic(Board &board) {
         int StScore = 2000 * StabilityScore(board);
         int CScore = 5000 * CornerScore(board);
         int CLScore = 2000 * CornerLossScore(board);
-        int power = (int) (pow(2.0, MAX(0, this->GetCorner(board, maxPlayer))));
-//        cout << " Disc: " << DScore
-//             << " Parity: " << PScore
-//             << " Edge: " << EScore
-//             << " Frontier: " << FScore
-//             << " Stability: " << StScore
-//             << " Corner: " << CScore
-//             << " CornerLoss: " << CLScore
-//             << " Power: " << power << endl;
+        auto power = static_cast<int>(pow(2.0, MAX(0, this->GetCorner(board, maxPlayer))));
         return (DScore
                 + PScore
                 + EScore
@@ -155,8 +130,8 @@ int Heuristic::StableCorner(Board &board, int color) {
 int Heuristic::MobilityScore(Board &board) {
     vector<Board::Move> maxLegalMove = board.FindLegalMoves(maxPlayer);
     vector<Board::Move> minLegalMove = board.FindLegalMoves(minPlayer);
-    int maxMoves = (int) maxLegalMove.size();
-    int minMoves = (int) minLegalMove.size();
+    auto maxMoves = static_cast<int>(maxLegalMove.size());
+    auto minMoves = static_cast<int>(minLegalMove.size());
     return 100 * (maxMoves - minMoves) / (maxMoves + minMoves + 1);
 }
 

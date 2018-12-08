@@ -1,7 +1,3 @@
-//
-// Created by ZengS on 2018/11/17.
-//
-
 #ifndef OTH_CONST_H
 #define OTH_CONST_H
 
@@ -19,7 +15,7 @@
 
 #define STOPTIME 0.9
 
-#define MAX(a,b) (a > b) ? a : b
-#define MIN(a,b) (a < b) ? a : b
+#define MAX(a, b) (a > b) ? a : b
+#define MIN(a, b) (a < b) ? a : b
 
 #endif //OTH_CONST_H

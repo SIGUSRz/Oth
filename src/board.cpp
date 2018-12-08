@@ -1,10 +1,3 @@
-#ifndef _BOARD_CPP_
-#define _BOARD_CPP_
-
-#include <iostream>
-#include <iomanip>
-#include <vector>
-#include "const.hpp"
 #include "board.hpp"
 
 using namespace std;
@@ -93,8 +86,8 @@ void Board::PrintBoard(vector<Board::Move> moves) {
         cout << i << " |";
         for (int j = 0; j < BOARDSIZE; j++) {
             bool potentialMove = false;
-            for (int k = 0; k < moves.size(); k++) {
-                if (moves[k].grid.y == i && moves[k].grid.x == j) {
+            for (auto &move : moves) {
+                if (move.grid.y == i && move.grid.x == j) {
                     if (currentPlayer == BLACK) {
                         cout << GREEN << setw(2) << board[i][j] << RESET << " ";
                     } else {
@@ -112,14 +105,23 @@ void Board::PrintBoard(vector<Board::Move> moves) {
                 cout << setw(2) << board[i][j] << RESET << " ";
             }
         }
-        cout << "|" << endl;
+        cout << "|";
+
+        if (i == 0) {
+            cout << "\t\tBlack Valid Move: " << GREEN << setw(2) << 0 << RESET << endl;
+        } else if (i == 1) {
+            cout << "\t\tWhite Valid Move: " << YELLOW << setw(2) << 0 << RESET << endl;
+        } else if (i == 3) {
+            cout << "\t\tBlack Score: " << RED << setw(2) << blackScore << RESET << endl;
+        } else if (i == 4) {
+            cout << "\t\tWhite Score: " << BLUE << setw(2) << whiteScore << RESET << endl;
+        } else if (i == 5) {
+            cout << "\t\tTotal Disc: " << discOnBoard << endl;
+        } else {
+            cout << endl;
+        }
     }
     cout << "   ------------------------" << endl;
-    cout << "Black Valid Move: " << GREEN << setw(2) << 0 << RESET << endl;
-    cout << "White Valid Move: " << YELLOW << setw(2) << 0 << RESET << endl;
-    cout << "Black Score: " << RED << setw(2) << blackScore << RESET << endl;
-    cout << "White Score: " << BLUE << setw(2) << whiteScore << RESET << endl;
-    cout << "Total Disc: " << discOnBoard << endl;
 }
 
 // check if the grid is on frontier,
@@ -249,4 +251,3 @@ vector<Board::Move> Board::FindLegalMoves(int player) {
     }
     return moves;
 }
-#endif //_BOARD_CPP_

@@ -1,43 +1,20 @@
-#ifndef _GAME_CPP_
-#define _GAME_CPP_
-
 #include "game.hpp"
 
 using namespace std;
 
-void Game::setup(int blackIsHuman, int whiteIsHuman, float tLimit, string board_file) {
-    if (!board_file.empty()) {
-        int state[BOARDSIZE][BOARDSIZE];
-        int player;
-        int i = 0, j = 0;
-        fstream fs;
-
-        fs.open(board_file.c_str(), fstream::in);
-        char c;
-        while ((c = fs.get()) != EOF) {
-            if (c == '0' || c == '1' || c == '2') {
-                state[i][j++] = c - '0';
-                if (j == BOARDSIZE) {
-                    j = 0;
-                    ++i;
-                    if (i == BOARDSIZE) {
-                        break;
-                    }
-                }
-            }
-        }
-
-        fs >> player;
-        board = Board(state, player);
-        board.timeLimit = tLimit;
-        fs.close();
+void Game::Setup(int p1, int p2, float timeLimit, string file_list) {
+    if (!file_list.empty()) {
+        cout << "File read not supported" << endl;
+        this->board = Board();
+        this->board.timeLimit = timeLimit;
+        this->blackPlayer.isAI = (p1 != 1);
+        this->whitePlayer.isAI = (p2 != 1);
+        this->currentColor = BLACK;
     } else {
         this->board = Board();
-        this->board.timeLimit = tLimit;
-        this->blackPlayer.color = BLACK;
-        this->whitePlayer.color = WHITE;
-        this->blackPlayer.isAI = (blackIsHuman != 1);
-        this->whitePlayer.isAI = (whiteIsHuman != 1);
+        this->board.timeLimit = timeLimit;
+        this->blackPlayer.isAI = (p1 != 1);
+        this->whitePlayer.isAI = (p2 != 1);
         this->currentColor = BLACK;
     }
 }
@@ -94,5 +71,3 @@ void Game::Play() {
         CheckGameOver();
     }
 }
-
-#endif //_GAME_CPP_

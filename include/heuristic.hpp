@@ -1,7 +1,3 @@
-//
-// Created by ZengS on 2018/12/4.
-//
-
 #ifndef OTH_HEURISTIC_HPP
 #define OTH_HEURISTIC_HPP
 
@@ -15,6 +11,7 @@ using namespace std;
 class Heuristic {
 public:
     int Minimax_Heuristic(Board &board);
+
     int maxPlayer;
     int minPlayer;
 

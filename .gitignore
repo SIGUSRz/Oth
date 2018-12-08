@@ -1,7 +1,5 @@
 .idea
 cmake-build-debug
-obj
-bin
 
 # Prerequisites
 *.d
