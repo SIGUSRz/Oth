@@ -88,7 +88,6 @@ void Game::CheckGameOver() {
 
 void Game::Play() {
     this->gameOver = false;
-    this->randomizer.seed(0);
 
     cout << "Game Start" << endl << endl;
     this->board.PrintBoard(this->board.FindLegalMoves(this->currentColor));

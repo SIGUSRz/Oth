@@ -45,6 +45,7 @@ Board::Board() {
     this->pass[1] = false;
     this->blackScore = 2;
     this->whiteScore = 2;
+    this->discOnBoard = this->blackScore + this->whiteScore;
 }
 
 
@@ -59,8 +60,11 @@ Board::Board(const Board &b) {
     }
     this->blackScore = b.blackScore;
     this->whiteScore = b.whiteScore;
-
+    this->discOnBoard = b.discOnBoard;
+    this->timeLimit = b.timeLimit;
     this->currentPlayer = b.currentPlayer;
+    this->pass[0] = b.pass[0];
+    this->pass[1] = b.pass[1];
 }
 
 //  constructor with exist board and player

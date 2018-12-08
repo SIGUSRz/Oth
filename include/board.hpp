@@ -41,6 +41,7 @@ public:
     int currentPlayer;
     int discOnBoard, blackScore, whiteScore;
     vector<vector<int>> board;
+    vector<Board::Move> heuristicMoves;
     float timeLimit;
     bool pass[2];
 

@@ -10,6 +10,8 @@
 #include <iostream>
 #include <chrono>
 #include <climits>
+#include <random>
+#include <array>
 #include "const.hpp"
 #include "heuristic.hpp"
 #include "board.hpp"
@@ -24,7 +26,24 @@ public:
 private:
     Heuristic heuristic;
     int maxPlayer;
-    int minPlayer;
+
+    class Node {
+    public:
+        bool isMaxNode;
+        int alpha;
+        int beta;
+        int score;
+        Board board;
+        int bestIterator;
+        int moveIterator;
+        int lastMove;
+//        vector<Board::Move>::iterator prevIterator;
+//        vector<Board::Move>::iterator moveIterator;
+//        vector<Board::Move>::iterator lastMove;
+    };
+
+    vector<Node> nodeStack;
+    minstd_rand randomizer;
 
     std::chrono::time_point<std::chrono::system_clock> startTimer();
 
@@ -37,6 +56,9 @@ private:
     int AlphaBetaPruning(Board board, int depth,
                          std::chrono::time_point<std::chrono::system_clock>,
                          int alpha, int beta, bool maxPlayer);
+
+    int AlphaBeta(Board board, int depthLimit,
+                  std::chrono::time_point<std::chrono::system_clock> startTime);
 };
 
 #endif //OTH_PLAYER_HPP

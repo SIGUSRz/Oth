@@ -9,7 +9,6 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include <random>
 #include <climits>
 #include <ctime>
 #include <cctype>
@@ -36,7 +35,6 @@ private:
     bool gameOver;
     int currentColor;
     Board board;
-    minstd_rand randomizer;
 };
 
 #endif //OTH_GAME_H
