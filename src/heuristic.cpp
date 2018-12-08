@@ -24,8 +24,7 @@ int Heuristic::Minimax_Heuristic(Board &board) {
                 + SScore
                 + StScore
                 + CScore
-                + CLScore)
-               * power;
+                + CLScore * power);
     } else if (board.discOnBoard <= 58) {
         // Midgame
         int DScore = 10 * DiscScore(board);
@@ -46,8 +45,7 @@ int Heuristic::Minimax_Heuristic(Board &board) {
                 + FScore
                 + StScore
                 + CScore
-                + CLScore)
-               * power;
+                + CLScore * power);
     } else {
         // Endgame
         int DScore = 500 * DiscScore(board);
@@ -64,8 +62,7 @@ int Heuristic::Minimax_Heuristic(Board &board) {
                 + FScore
                 + StScore
                 + CScore
-                + CLScore)
-               * power;
+                + CLScore * power);
     }
 }
 
@@ -367,7 +364,7 @@ int Heuristic::FrontierScore(Board &board) {
     int maxFrontier = 0, minFrontier = 0;
     for (int i = 0; i < BOARDSIZE; i++) {
         for (int j = 0; j < BOARDSIZE; j++) {
-            if (board.board[i][j] != '0') {
+            if (board.board[i][j] != EMPTY) {
                 if (board.OnFrontier(i, j)) {
                     if (board.board[i][j] == maxPlayer) {
                         maxFrontier++;
