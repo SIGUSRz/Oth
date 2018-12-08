@@ -1,10 +1,6 @@
 #include "heuristic.hpp"
 
 int Heuristic::Minimax_Heuristic(Board &board) {
-    maxPlayer = board.currentPlayer;
-    minPlayer = (maxPlayer == WHITE)
-                ? BLACK
-                : WHITE;
 
     // At terminal state
     if (board.TerminalState()) {
@@ -16,38 +12,91 @@ int Heuristic::Minimax_Heuristic(Board &board) {
 
     if (board.discOnBoard <= 20) {
         // Opening game
-        return 5 * MobilityScore(board)
-               + 5 * PotentialMobility(board)
-               + 20 * SquareWeights(board)
-               + 10000 * StabilityScore(board)
-               + 10000 * CornerScore(board)
-               + 50000 * CornerLossScore(board);
+        int MScore = 5 * MobilityScore(board);
+        int PMScore = 5 * PotentialMobility(board);
+        int SScore = 20 * SquareWeights(board);
+        int StScore = 2000 * StabilityScore(board);
+        int CScore = 5000 * CornerScore(board);
+        int CLScore = 2000 * CornerLossScore(board);
+        int power = (int) (pow(2.0, MAX(0, this->GetCorner(board, maxPlayer))));
+//        cout << "Mobility: " << MScore
+//             << " PotentialMob: " << PMScore
+//             << " Square: " << SScore
+//             << " Stability: " << StScore
+//             << " Corner: " << CScore
+//             << " CornerLoss: " << CLScore
+//             << " Power: " << power << endl;
+        return (MScore
+                + PMScore
+                + SScore
+                + StScore
+                + CScore
+                + CLScore)
+               * power;
     } else if (board.discOnBoard <= 58) {
         // Midgame
-        return 10 * DiscScore(board)
-               + 2 * MobilityScore(board)
-               + 2 * PotentialMobility(board)
-               + 10 * SquareWeights(board)
-               + 10 * EdgeScore(board)
-               + 10 * FrontierScore(board)
-               + 10000 * CornerScore(board)
-               + 10000 * StabilityScore(board)
-               + 50000 * CornerLossScore(board);
+        int DScore = 10 * DiscScore(board);
+        int MScore = 2 * MobilityScore(board);
+        int PMScore = 2 * PotentialMobility(board);
+        int SScore = 10 * SquareWeights(board);
+        int EScore = 10 * EdgeScore(board);
+        int FScore = 10 * FrontierScore(board);
+        int StScore = 2000 * StabilityScore(board);
+        int CScore = 5000 * CornerScore(board);
+        int CLScore = 2000 * CornerLossScore(board);
+        int power = (int) (pow(2.0, MAX(0, this->GetCorner(board, maxPlayer))));
+//        cout << " Disc: " << DScore
+//             << " Mobility: " << MScore
+//             << " PotentialMob: " << PMScore
+//             << " Square: " << SScore
+//             << " Edge: " << EScore
+//             << " Frontier: " << FScore
+//             << " Stability: " << StScore
+//             << " Corner: " << CScore
+//             << " CornerLoss: " << CLScore
+//             << " Power: " << power << endl;
+        return (DScore
+                + MScore
+                + PMScore
+                + SScore
+                + EScore
+                + FScore
+                + StScore
+                + CScore
+                + CLScore)
+               * power;
     } else {
         // Endgame
-        return 500 * DiscScore(board)
-               + 200 * Parity(board)
-               + 100 * FrontierScore(board)
-               + 100 * EdgeScore(board)
-               + 10000 * CornerScore(board)
-               + 10000 * StabilityScore(board)
-               + 50000 * CornerLossScore(board);
+        int DScore = 500 * DiscScore(board);
+        int PScore = 200 * Parity(board);
+        int EScore = 100 * EdgeScore(board);
+        int FScore = 100 * FrontierScore(board);
+        int StScore = 2000 * StabilityScore(board);
+        int CScore = 5000 * CornerScore(board);
+        int CLScore = 2000 * CornerLossScore(board);
+        int power = (int) (pow(2.0, MAX(0, this->GetCorner(board, maxPlayer))));
+//        cout << " Disc: " << DScore
+//             << " Parity: " << PScore
+//             << " Edge: " << EScore
+//             << " Frontier: " << FScore
+//             << " Stability: " << StScore
+//             << " Corner: " << CScore
+//             << " CornerLoss: " << CLScore
+//             << " Power: " << power << endl;
+        return (DScore
+                + PScore
+                + EScore
+                + FScore
+                + StScore
+                + CScore
+                + CLScore)
+               * power;
     }
 }
 
 int Heuristic::Utility(Board &board) {
     if (maxPlayer == WHITE) {
-        return WHITE * board.discOnBoard;
+        return -1 * board.discOnBoard;
     } else {
         return board.discOnBoard;
     }
@@ -216,31 +265,28 @@ int Heuristic::PlayerPotentialMobility(Board &board, int color) {
 }
 
 int Heuristic::CornerScore(Board &board) {
-    std::vector<int> corners = {0, 7, 56, 63};
-    int maxCorner = 0;
-    int minCorner = 0;
+    int maxCorner = this->GetCorner(board, maxPlayer);
+    int minCorner = this->GetCorner(board, minPlayer);
 
-    if (board.board[0][0] == maxPlayer) {
-        maxCorner++;
-    } else if (board.board[0][0] == minPlayer) {
-        minCorner++;
-    }
-    if (board.board[0][BOARDSIZE - 1] == maxPlayer) {
-        maxCorner++;
-    } else if (board.board[0][BOARDSIZE - 1] == minPlayer) {
-        minCorner++;
-    }
-    if (board.board[BOARDSIZE - 1][0] == maxPlayer) {
-        maxCorner++;
-    } else if (board.board[BOARDSIZE - 1][0] == minPlayer) {
-        minCorner++;
-    }
-    if (board.board[BOARDSIZE - 1][BOARDSIZE - 1] == maxPlayer) {
-        maxCorner++;
-    } else if (board.board[BOARDSIZE - 1][BOARDSIZE - 1] == minPlayer) {
-        minCorner++;
-    }
     return 100 * (maxCorner - minCorner) / (maxCorner + minCorner + 1);
+}
+
+int Heuristic::GetCorner(Board &board, int color) {
+    int corner = 0;
+
+    if (board.board[0][0] == color) {
+        corner++;
+    }
+    if (board.board[0][BOARDSIZE - 1] == color) {
+        corner++;
+    }
+    if (board.board[BOARDSIZE - 1][0] == color) {
+        corner++;
+    }
+    if (board.board[BOARDSIZE - 1][BOARDSIZE - 1] == color) {
+        corner++;
+    }
+    return corner;
 }
 
 int Heuristic::CornerLossScore(Board &board) {

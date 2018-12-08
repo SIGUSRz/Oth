@@ -15,10 +15,10 @@ using namespace std;
 class Heuristic {
 public:
     int Minimax_Heuristic(Board &board);
-
-private:
     int maxPlayer;
     int minPlayer;
+
+private:
     vector<bool> stableDiscs;
 
     int Utility(Board &board);
@@ -34,6 +34,8 @@ private:
     int PlayerPotentialMobility(Board &board, int color);
 
     int CornerScore(Board &board);
+
+    int GetCorner(Board &board, int color);
 
     int CornerLossScore(Board &board);
 

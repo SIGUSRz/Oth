@@ -38,7 +38,7 @@ private:
 
     int AlphaBetaPruning(Board board, int depth,
                          std::chrono::time_point<std::chrono::system_clock>,
-                         int alpha, int beta, bool maxPlayer);
+                         int alpha, int beta, bool maxP);
 };
 
 #endif //OTH_PLAYER_HPP

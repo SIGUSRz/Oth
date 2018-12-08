@@ -53,10 +53,11 @@ Board::Move Player::HumanMove(Board board, bool &pass) {
 Board::Move Player::AIMove(Board board, bool &pass) {
     std::chrono::time_point<std::chrono::system_clock> startTime
             = this->startTimer();
-    maxPlayer = board.currentPlayer;
+    heuristic.maxPlayer = board.currentPlayer;
+    heuristic.minPlayer = board.currentPlayer == BLACK ? WHITE : BLACK;
     randomizer.seed(0);
 
-    vector<Board::Move> legalMove = board.FindLegalMoves(maxPlayer);
+    vector<Board::Move> legalMove = board.FindLegalMoves(heuristic.maxPlayer);
 
     Board::Move move;
     if (legalMove.empty()) {
@@ -73,17 +74,28 @@ Board::Move Player::AIMove(Board board, bool &pass) {
     int depthLimit = NUMGRIDS - board.discOnBoard;
     int score = 0;
     int moveIdx = 0;
-    int randMove = 1;
+    int prevIdx = 0;
+    int randMove;
+    int alpha = INT_MIN, beta;
     for (depth = 0; depth < depthLimit &&
                     this->stopTimer(startTime) < STOPTIME * board.timeLimit; depth++) {
-        int alpha = INT_MIN, beta = INT_MAX;
+        alpha = INT_MIN;
+        beta = INT_MAX;
+        randMove = 1;
+#ifdef DEBUG
+        cout << "Depth: " << depth << " Limit: " << depthLimit << endl;
+#endif
         for (int i = 0; i < legalMove.size(); i++) {
             Board testBoard = board;
             testBoard.UpdateBoard(legalMove[i]);
             score = AlphaBetaPruning(testBoard, depth, startTime, alpha, beta, false);
-            if (this->stopTimer(startTime) < STOPTIME * board.timeLimit) {
+            if (this->stopTimer(startTime) > STOPTIME * board.timeLimit) {
+                moveIdx = prevIdx;
                 break;
             }
+#ifdef DEBUG
+            cout << "I: " << i << " Score: " << score << " Alpha: " << alpha << endl;
+#endif
             if (score > alpha) {
                 moveIdx = i;
                 alpha = score;
@@ -93,7 +105,11 @@ Board::Move Player::AIMove(Board board, bool &pass) {
                 }
             }
         }
+        prevIdx = moveIdx;
     }
+#ifdef DEBUG
+    cout << "Score: " << score << " Alpha: " << alpha << endl;
+#endif
     move = legalMove[moveIdx];
     cout << "Depth: " << depth << " in " <<
          this->stopTimer(startTime) << " seconds" << endl;
@@ -105,7 +121,7 @@ Board::Move Player::AIMove(Board board, bool &pass) {
 
 int Player::AlphaBetaPruning(Board board, int depth,
                              std::chrono::time_point<std::chrono::system_clock> startTime,
-                             int alpha, int beta, bool maxPlayer) {
+                             int alpha, int beta, bool maxP) {
     int a = alpha, b = beta;
 
     if (this->stopTimer(startTime) > STOPTIME * board.timeLimit) {
@@ -120,17 +136,18 @@ int Player::AlphaBetaPruning(Board board, int depth,
         if (board.TerminalState()) {
             Board testBoard = board;
             testBoard.SwitchPlayer();
+            cout << " Pass " << endl;
             return heuristic.Minimax_Heuristic(testBoard);
         } else {
             Board testBoard = board;
             testBoard.pass[0] = false;
             testBoard.pass[1] = true;
             return AlphaBetaPruning(testBoard, depth, startTime,
-                                    alpha, beta, !maxPlayer);
+                                    alpha, beta, !maxP);
         }
     }
 
-    if (maxPlayer) {
+    if (maxP) {
         int value = INT_MIN;
         for (auto &move : m) {
             Board testBoard = board;
