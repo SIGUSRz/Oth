@@ -17,7 +17,7 @@ float Player::stopTimer(std::chrono::time_point<std::chrono::system_clock>
 Board::Move Player::FindMove(Board board, bool &pass) {
     Board::Move move;
     if (this->isAI) {
-        move = AIMove(board, pass);
+        move = AIMove(board, pass, this->timeLog);
     } else {
         move = HumanMove(board, pass);
     }
@@ -50,7 +50,7 @@ Board::Move Player::HumanMove(Board board, bool &pass) {
     return res;
 }
 
-Board::Move Player::AIMove(Board board, bool &pass) {
+Board::Move Player::AIMove(Board board, bool &pass, vector<float> &res) {
     std::chrono::time_point<std::chrono::system_clock> startTime
             = this->startTimer();
     heuristic.maxPlayer = board.currentPlayer;
@@ -77,6 +77,7 @@ Board::Move Player::AIMove(Board board, bool &pass) {
     int prevIdx = 0;
     int randMove;
     int alpha, beta;
+    int num = 0;
     for (depth = 0; depth < depthLimit &&
                     this->stopTimer(startTime) < STOPTIME * board.timeLimit; depth++) {
         alpha = INT_MIN;
@@ -88,7 +89,7 @@ Board::Move Player::AIMove(Board board, bool &pass) {
         for (int i = 0; i < static_cast<int>(legalMove.size()); i++) {
             Board testBoard = board;
             testBoard.UpdateBoard(legalMove[i]);
-            score = AlphaBetaPruning(testBoard, depth, startTime, alpha, beta, false);
+            score = AlphaBetaPruning(testBoard, depth, startTime, alpha, beta, false, num);
             if (this->stopTimer(startTime) > STOPTIME * board.timeLimit) {
                 moveIdx = prevIdx;
                 break;
@@ -111,8 +112,11 @@ Board::Move Player::AIMove(Board board, bool &pass) {
     cout << "Score: " << score << " Alpha: " << alpha << endl;
 #endif
     move = legalMove[moveIdx];
+    cout << "Search Node: " << num << endl;
+    float t = this->stopTimer(startTime);
+    res.emplace_back(t);
     cout << "Depth: " << depth << " in " <<
-         this->stopTimer(startTime) << " seconds" << endl;
+         t << " seconds" << endl;
     cout << "Choose move " << moveIdx << " ["
          << move.grid.y << ", " << move.grid.x << "]" << endl;
     return legalMove[moveIdx];
@@ -121,12 +125,14 @@ Board::Move Player::AIMove(Board board, bool &pass) {
 
 int Player::AlphaBetaPruning(Board board, int depth,
                              std::chrono::time_point<std::chrono::system_clock> startTime,
-                             int alpha, int beta, bool maxP) {
+                             int alpha, int beta, bool maxP, int &num) {
     int a = alpha, b = beta;
 
     if (this->stopTimer(startTime) > STOPTIME * board.timeLimit) {
+        num++;
         return heuristic.Minimax_Heuristic(board);
     } else if (depth == 0) {
+        num++;
         return heuristic.Minimax_Heuristic(board);
     } else {
         depth--;
@@ -136,14 +142,16 @@ int Player::AlphaBetaPruning(Board board, int depth,
         if (board.TerminalState()) {
             Board testBoard = board;
             testBoard.SwitchPlayer();
+            num++;
             cout << " Pass " << endl;
             return heuristic.Minimax_Heuristic(testBoard);
         } else {
             Board testBoard = board;
+            num++;
             testBoard.pass[0] = false;
             testBoard.pass[1] = true;
             return AlphaBetaPruning(testBoard, depth, startTime,
-                                    alpha, beta, !maxP);
+                                    alpha, beta, !maxP, num);
         }
     }
 
@@ -152,7 +160,8 @@ int Player::AlphaBetaPruning(Board board, int depth,
         for (auto &move : m) {
             Board testBoard = board;
             testBoard.UpdateBoard(move);
-            int score = AlphaBetaPruning(testBoard, depth, startTime, a, b, false);
+            num++;
+            int score = AlphaBetaPruning(testBoard, depth, startTime, a, b, false, num);
             value = MAX(value, score);
 
             if (value >= beta) {
@@ -166,7 +175,8 @@ int Player::AlphaBetaPruning(Board board, int depth,
         for (auto &move : m) {
             Board testBoard = board;
             testBoard.UpdateBoard(move);
-            int score = AlphaBetaPruning(testBoard, depth, startTime, a, b, true);
+            num++;
+            int score = AlphaBetaPruning(testBoard, depth, startTime, a, b, true, num);
             value = MIN(value, score);
 
             if (value <= a) {

@@ -52,6 +52,22 @@ void Game::CheckGameOver() {
         } else {
             cout << "Tie!" << endl;
         }
+        if (blackPlayer.isAI) {
+            if (!blackPlayer.timeLog.empty()) {
+                cout << "Black Average Search Time: "
+                     << accumulate(blackPlayer.timeLog.begin(),
+                                   blackPlayer.timeLog.end(), 0.0) / blackPlayer.timeLog.size()
+                     << endl;
+            }
+        }
+        if (whitePlayer.isAI) {
+            if (!whitePlayer.timeLog.empty()) {
+                cout << "White Average Search Time: "
+                     << accumulate(whitePlayer.timeLog.begin(),
+                                   whitePlayer.timeLog.end(), 0.0) / whitePlayer.timeLog.size()
+                     << endl;
+            }
+        }
         this->gameOver = true;
     } else {
         this->board.pass[1] = this->board.pass[0];
@@ -66,7 +82,9 @@ void Game::Play() {
     cout << "Game Start" << endl << endl;
     this->board.PrintBoard(this->board.FindLegalMoves(this->currentColor));
 
+    this->step = 0;
     while (!this->gameOver) {
+        this->step += 1;
         ApplyMove();
         CheckGameOver();
     }

@@ -29,6 +29,7 @@ private:
     Player whitePlayer;
     bool gameOver;
     int currentColor;
+    int step;
     Board board;
 };
 

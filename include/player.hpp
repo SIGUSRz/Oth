@@ -14,6 +14,7 @@
 class Player {
 public:
     bool isAI = false;
+    vector<float> timeLog;
 
     Board::Move FindMove(Board board, bool &pass);
 
@@ -27,11 +28,11 @@ private:
 
     Board::Move HumanMove(Board board, bool &pass);
 
-    Board::Move AIMove(Board board, bool &pass);
+    Board::Move AIMove(Board board, bool &pass, vector<float> &timeLog);
 
     int AlphaBetaPruning(Board board, int depth,
                          std::chrono::time_point<std::chrono::system_clock>,
-                         int alpha, int beta, bool maxP);
+                         int alpha, int beta, bool maxP, int &num);
 };
 
 #endif //OTH_PLAYER_HPP
