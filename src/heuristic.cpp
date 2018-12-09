@@ -24,7 +24,7 @@ int Heuristic::Minimax_Heuristic(Board &board) {
                 + SScore
                 + StScore
                 + CScore
-                + CLScore * power);
+                + CLScore * power) * power;
     } else if (board.discOnBoard <= 58) {
         // Midgame
         int DScore = 10 * DiscScore(board);
@@ -45,7 +45,7 @@ int Heuristic::Minimax_Heuristic(Board &board) {
                 + FScore
                 + StScore
                 + CScore
-                + CLScore * power);
+                + CLScore * power) * power;
     } else {
         // Endgame
         int DScore = 500 * DiscScore(board);
@@ -62,7 +62,7 @@ int Heuristic::Minimax_Heuristic(Board &board) {
                 + FScore
                 + StScore
                 + CScore
-                + CLScore * power);
+                + CLScore * power) * power;
     }
 }
 
